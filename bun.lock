@@ -5,6 +5,7 @@
     "": {
       "name": "dabsstack",
       "devDependencies": {
+        "@internationalized/date": "^3.10.0",
         "@lucide/svelte": "^0.562.0",
         "@shikijs/langs": "^3.21.0",
         "@shikijs/themes": "^3.21.0",
