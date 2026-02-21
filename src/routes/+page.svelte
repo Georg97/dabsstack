@@ -33,9 +33,40 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { toast } from 'svelte-sonner';
 	import { getRandomMsg, getTags } from './data.remote';
+	import { onMount } from 'svelte';
 
 	let copied = $state(false);
 	let showEffects = $state(true);
+	let activeSection = $state('hero');
+
+	const sections = [
+		{ id: 'hero', label: 'Home' },
+		{ id: 'stack', label: 'Stack' },
+		{ id: 'features', label: 'Features' },
+		{ id: 'queries', label: 'Queries' },
+		{ id: 'forms', label: 'Forms' },
+		{ id: 'cta', label: 'Get Started' }
+	];
+
+	onMount(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting) {
+						activeSection = entry.target.id;
+					}
+				}
+			},
+			{ rootMargin: '-40% 0px -55% 0px' }
+		);
+
+		for (const section of sections) {
+			const el = document.getElementById(section.id);
+			if (el) observer.observe(el);
+		}
+
+		return () => observer.disconnect();
+	});
 
 	let { data } = $props();
 
@@ -101,37 +132,55 @@
 <div class="grain min-h-screen overflow-hidden">
 	<!-- ========== NAV ========== -->
 	<header class="bg-background/60 fixed top-0 z-50 w-full border-b border-white/[0.06] backdrop-blur-2xl">
-		<nav class="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 lg:px-8">
-			<a href="/" class="group font-display flex items-center gap-2.5 text-lg font-semibold tracking-tight" style="font-family: var(--font-display);">
-				<div class="from-amber to-terracotta flex size-8 items-center justify-center rounded-lg bg-gradient-to-br">
-					<Layers class="text-primary-foreground size-4" />
+		<nav class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:h-16 sm:px-6 lg:px-8">
+			<a href="/" class="group font-display flex items-center gap-2 text-base font-semibold tracking-tight sm:gap-2.5 sm:text-lg" style="font-family: var(--font-display);">
+				<div class="from-amber to-terracotta flex size-7 items-center justify-center rounded-lg bg-gradient-to-br sm:size-8">
+					<Layers class="text-primary-foreground size-3.5 sm:size-4" />
 				</div>
 				<span class="group-hover:text-amber transition-colors">dabs</span><span class="text-muted-foreground">stack</span>
 			</a>
 
-			<div class="flex items-center gap-2">
+			<div class="flex items-center gap-1.5 sm:gap-2">
 				<Tooltip.Root>
 					<Tooltip.Trigger>
-						<div class="bg-secondary/50 flex items-center gap-2 rounded-full border border-white/[0.06] px-3 py-1.5">
+						<div class="bg-secondary/50 hidden items-center gap-2 rounded-full border border-white/[0.06] px-3 py-1.5 sm:flex">
 							<span class="text-muted-foreground text-xs">Effects</span>
 							<Switch bind:checked={showEffects} />
 						</div>
 					</Tooltip.Trigger>
 					<Tooltip.Content>Toggle visual effects</Tooltip.Content>
 				</Tooltip.Root>
-				<Button variant="ghost" size="sm" href="https://github.com/Georg97/dabsstack" target="_blank" class="text-muted-foreground hover:text-foreground">
+				<Button variant="ghost" size="sm" href="https://github.com/Georg97/dabsstack" target="_blank" class="text-muted-foreground hover:text-foreground size-8 p-0 sm:size-auto sm:p-2">
 					<Github class="size-4" />
 				</Button>
-				<Button size="sm" class="from-amber to-copper text-primary-foreground border-0 bg-gradient-to-r hover:opacity-90">
-					Get Started
+				<Button size="sm" class="from-amber to-copper text-primary-foreground border-0 bg-gradient-to-r text-xs hover:opacity-90 sm:text-sm">
+					<span class="hidden sm:inline">Get Started</span>
+					<span class="sm:hidden">Start</span>
 					<ArrowRight class="ml-1 size-3.5" />
 				</Button>
 			</div>
 		</nav>
 	</header>
 
+	<!-- ========== SECTION NAV ========== -->
+	<nav class="fixed left-6 top-1/2 z-40 hidden -translate-y-1/2 xl:block">
+		<div class="flex flex-col items-start gap-1">
+			{#each sections as section}
+				<a
+					href="#{section.id}"
+					class="group flex items-center gap-3 rounded-full py-1.5 pr-3 pl-2 text-xs transition-all duration-300 {activeSection === section.id ? 'text-amber bg-amber/10' : 'text-muted-foreground/50 hover:text-muted-foreground hover:bg-white/[0.03]'}"
+				>
+					<span
+						class="block size-1.5 rounded-full transition-all duration-300 {activeSection === section.id ? 'bg-amber scale-125' : 'bg-muted-foreground/30 group-hover:bg-muted-foreground/50'}"
+					></span>
+					{section.label}
+				</a>
+			{/each}
+		</div>
+	</nav>
+
 	<!-- ========== HERO ========== -->
-	<section class="relative flex min-h-[92vh] items-center justify-center pt-16">
+	<section id="hero" class="relative flex min-h-[92vh] items-center justify-center pt-16">
 		<!-- Gradient orbs -->
 		{#if showEffects}
 			<div
@@ -318,7 +367,7 @@
 	</div>
 
 	<!-- ========== STACK TABS ========== -->
-	<section class="relative mx-auto max-w-6xl px-6 py-24 lg:px-8">
+	<section id="stack" class="relative mx-auto max-w-6xl px-6 py-24 lg:px-8">
 		{#if showEffects}
 			<div class="pointer-events-none absolute top-0 left-1/2 size-[500px] -translate-x-1/2 rounded-full opacity-[0.06] blur-[100px]" style="background: var(--copper);"></div>
 		{/if}
@@ -370,7 +419,7 @@
 	</section>
 
 	<!-- ========== FEATURES BENTO GRID ========== -->
-	<section class="relative mx-auto max-w-6xl px-6 py-24 lg:px-8">
+	<section id="features" class="relative mx-auto max-w-6xl px-6 py-24 lg:px-8">
 		<div class="mb-14 text-center">
 			<Badge class="border-copper/20 bg-copper/10 text-copper mb-4">
 				<Eye class="mr-1 size-3" />
@@ -473,7 +522,7 @@
 		</div>
 	</div>
 
-	<section class="relative mx-auto max-w-6xl px-6 py-24 lg:px-8">
+	<section id="queries" class="relative mx-auto max-w-6xl px-6 py-24 lg:px-8">
 		{#if showEffects}
 			<div class="pointer-events-none absolute top-1/2 right-0 size-[400px] -translate-y-1/2 rounded-full opacity-[0.05] blur-[100px]" style="background: var(--terracotta);"></div>
 		{/if}
@@ -584,7 +633,7 @@
 		</div>
 	</div>
 
-	<section class="relative mx-auto max-w-6xl px-6 py-24 lg:px-8">
+	<section id="forms" class="relative mx-auto max-w-6xl px-6 py-24 lg:px-8">
 		{#if showEffects}
 			<div class="pointer-events-none absolute top-1/3 left-0 size-[350px] rounded-full opacity-[0.05] blur-[100px]" style="background: var(--amber);"></div>
 		{/if}
@@ -692,7 +741,7 @@
 	</section>
 
 	<!-- ========== CTA ========== -->
-	<section class="relative mx-auto max-w-6xl px-6 py-32 lg:px-8">
+	<section id="cta" class="relative mx-auto max-w-6xl px-6 py-32 lg:px-8">
 		{#if showEffects}
 			<div class="pointer-events-none absolute inset-0 opacity-[0.08]" style="background: radial-gradient(ellipse at center, var(--amber), transparent 70%);"></div>
 		{/if}
