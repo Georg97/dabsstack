@@ -21,8 +21,13 @@
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Check from '@lucide/svelte/icons/check';
 	import Copy from '@lucide/svelte/icons/copy';
-  import { getRandomMsg, getTags } from './data.remote';
-  import type { RemoteQuery } from '@sveltejs/kit';
+	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
+	import Server from '@lucide/svelte/icons/server';
+	import Radio from '@lucide/svelte/icons/radio';
+	import AlertCircle from '@lucide/svelte/icons/alert-circle';
+	import Loader from '@lucide/svelte/icons/loader';
+	import { getRandomMsg, getTags } from './data.remote';
+	import type { RemoteQuery } from '@sveltejs/kit';
 
 	let copied = $state(false);
 	let showEffects = $state(true);
@@ -175,22 +180,6 @@
 						your
 						<span class="italic text-muted-foreground">way</span>.
 					</h1>
-					<div>
-						<h1>Server Side generated content with SvelteKit's new Remote Queries</h1>
-						{#each await getTags() as tag}
-							<h1>tag: {tag}</h1>
-						{/each}
-
-						<h1>Runtime execution of Remote Functions</h1>
-						{#if randomQuery?.error}
-							<h1>This Message had an error (errors are simulated randomly). You can handle errors in your UI.</h1>
-						{:else if randomQuery?.loading}
-							<h1>loading...</h1>
-						{:else}
-							<h1>{randomQuery?.current}</h1>
-						{/if}
-						<Button onclick={() => { randomQuery.refresh() }}>Get new Message</Button>
-					</div>
 
 					<p
 						class="animate-fade-up mt-7 max-w-lg text-lg leading-relaxed text-muted-foreground"
@@ -547,6 +536,121 @@
 					</div>
 				</Card.CardContent>
 			</Card.Card>
+		</div>
+	</section>
+
+	<!-- ========== REMOTE QUERIES SHOWCASE ========== -->
+	<div class="mx-auto max-w-6xl px-6 lg:px-8">
+		<div class="relative flex items-center py-4">
+			<Separator class="flex-1 bg-white/[0.06]" />
+			<span class="mx-4 shrink-0 text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground/50">Live Demo</span>
+			<Separator class="flex-1 bg-white/[0.06]" />
+		</div>
+	</div>
+
+	<section class="relative mx-auto max-w-6xl px-6 py-24 lg:px-8">
+		{#if showEffects}
+			<div
+				class="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 size-[400px] rounded-full opacity-[0.05] blur-[100px]"
+				style="background: var(--terracotta);"
+			></div>
+		{/if}
+
+		<div class="relative">
+			<div class="mb-14 max-w-xl">
+				<Badge class="mb-4 border-terracotta/20 bg-terracotta/10 text-terracotta">
+					<Radio class="mr-1 size-3" />
+					Remote Queries
+				</Badge>
+				<h2
+					class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl"
+					style="font-family: var(--font-display);"
+				>
+					Server meets <span class="italic text-muted-foreground">client</span>
+				</h2>
+				<p class="mt-4 text-lg text-muted-foreground leading-relaxed">
+					SvelteKit's remote queries let you call server functions directly from components. Data flows seamlessly with built-in loading and error states.
+				</p>
+			</div>
+
+			<div class="grid gap-6 md:grid-cols-2">
+				<!-- SSR: getTags() -->
+				<Card.Card class="group border-white/[0.06] bg-card/50 backdrop-blur-sm transition-all duration-500 hover:border-copper/20 hover:bg-card/70 overflow-hidden">
+					<Card.CardHeader class="p-6 pb-4">
+						<div class="flex items-center justify-between">
+							<div class="flex items-center gap-3">
+								<div class="flex size-10 items-center justify-center rounded-xl border border-copper/20 bg-copper/10">
+									<Server class="size-5 text-copper" />
+								</div>
+								<div>
+									<Card.CardTitle class="text-base" style="font-family: var(--font-display);">Server-Side Data</Card.CardTitle>
+									<p class="text-xs text-muted-foreground font-mono mt-0.5">getTags()</p>
+								</div>
+							</div>
+							<Badge variant="outline" class="border-green-400/20 text-green-400/80 text-xs">SSR</Badge>
+						</div>
+					</Card.CardHeader>
+					<Card.CardContent class="p-6 pt-0">
+						<p class="text-sm text-muted-foreground mb-4">Resolved on the server before the page renders. Zero client-side loading.</p>
+						<div class="rounded-lg border border-white/[0.06] bg-secondary/30 p-4">
+							<p class="text-xs text-muted-foreground/60 uppercase tracking-wider mb-2.5">Response</p>
+							<div class="flex flex-wrap gap-1.5">
+								{#each await getTags() as tag}
+									<Badge class="border-amber/20 bg-amber/10 text-amber">{tag}</Badge>
+								{/each}
+							</div>
+						</div>
+					</Card.CardContent>
+				</Card.Card>
+
+				<!-- Client: getRandomMsg() -->
+				<Card.Card class="group border-white/[0.06] bg-card/50 backdrop-blur-sm transition-all duration-500 hover:border-terracotta/20 hover:bg-card/70 overflow-hidden">
+					<Card.CardHeader class="p-6 pb-4">
+						<div class="flex items-center justify-between">
+							<div class="flex items-center gap-3">
+								<div class="flex size-10 items-center justify-center rounded-xl border border-terracotta/20 bg-terracotta/10">
+									<Radio class="size-5 text-terracotta" />
+								</div>
+								<div>
+									<Card.CardTitle class="text-base" style="font-family: var(--font-display);">Runtime Query</Card.CardTitle>
+									<p class="text-xs text-muted-foreground font-mono mt-0.5">getRandomMsg()</p>
+								</div>
+							</div>
+							<Badge variant="outline" class="border-terracotta/20 text-terracotta text-xs">Client</Badge>
+						</div>
+					</Card.CardHeader>
+					<Card.CardContent class="p-6 pt-0">
+						<p class="text-sm text-muted-foreground mb-4">Called at runtime with reactive loading & error states. Errors are simulated randomly.</p>
+						<div class="rounded-lg border border-white/[0.06] bg-secondary/30 p-4">
+							<p class="text-xs text-muted-foreground/60 uppercase tracking-wider mb-2.5">Response</p>
+							<div class="min-h-[2.5rem] flex items-center">
+								{#if randomQuery?.error}
+									<div class="flex items-center gap-2 text-destructive">
+										<AlertCircle class="size-4 shrink-0" />
+										<span class="text-sm">Error — randomly simulated failure</span>
+									</div>
+								{:else if randomQuery?.loading}
+									<div class="flex items-center gap-2 text-muted-foreground">
+										<Loader class="size-4 animate-spin" />
+										<span class="text-sm">Loading...</span>
+									</div>
+								{:else}
+									<p class="text-sm text-foreground">{randomQuery?.current}</p>
+								{/if}
+							</div>
+						</div>
+						<Button
+							variant="outline"
+							size="sm"
+							class="mt-4 border-white/10 hover:border-terracotta/20 hover:text-terracotta"
+							onclick={() => { randomQuery.refresh() }}
+						>
+							<RefreshCw class="mr-1.5 size-3.5" />
+							Refresh
+						</Button>
+					</Card.CardContent>
+				</Card.Card>
+			</div>
 		</div>
 	</section>
 
