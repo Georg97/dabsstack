@@ -2,6 +2,7 @@
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { TooltipProvider } from '$lib/components/ui/tooltip';
+	import { Toaster } from '$lib/components/ui/sonner';
 
 	let { children } = $props();
 </script>
@@ -10,3 +11,4 @@
 <TooltipProvider>
 	{@render children()}
 </TooltipProvider>
+<Toaster richColors />

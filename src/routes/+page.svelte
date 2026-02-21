@@ -31,6 +31,7 @@
 	import Terminal from '@lucide/svelte/icons/terminal';
 	import Zap from '@lucide/svelte/icons/zap';
 	import { superForm } from 'sveltekit-superforms';
+	import { toast } from 'svelte-sonner';
 	import { getRandomMsg, getTags } from './data.remote';
 
 	let copied = $state(false);
@@ -38,10 +39,21 @@
 
 	let { data } = $props();
 
-	const { form, errors, enhance } = superForm(data.form);
+	const { form, errors, enhance, message } = superForm(data.form, {
+		onUpdated({ form }) {
+			if (form.valid) {
+				toast.success('Message sent!', {
+					description: 'Thanks for reaching out. We\'ll get back to you soon.'
+				});
+			} else {
+				toast.error('Submission failed', {
+					description: 'Please fix the errors and try again.'
+				});
+			}
+		}
+	});
 
 	var randomQuery = getRandomMsg();
-	// const { form, errors, constraints, message } = superForm(data?.form);
 
 	function copyCommand() {
 		navigator.clipboard.writeText('bunx sv create --template minimal .');
@@ -613,6 +625,11 @@
 					</div>
 				</Card.CardHeader>
 				<Card.CardContent class="p-6">
+					{#if $message}
+						<div class="mb-4 rounded-lg bg-green-500/10 p-4 text-green-500">
+							{$message}
+						</div>
+					{/if}
 					<form method="POST" use:enhance>
 						<Field.Group>
 							<Field.Set>
