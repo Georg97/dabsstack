@@ -1,38 +1,45 @@
 <script lang="ts">
+	import * as Avatar from '$lib/components/ui/avatar';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
-	import { Separator } from '$lib/components/ui/separator';
 	import * as Card from '$lib/components/ui/card';
+	import * as Field from '$lib/components/ui/field';
+	import Input from '$lib/components/ui/input/input.svelte';
+	import { Separator } from '$lib/components/ui/separator';
+	import { Switch } from '$lib/components/ui/switch';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import { Switch } from '$lib/components/ui/switch';
-	import * as Avatar from '$lib/components/ui/avatar';
+	import AlertCircle from '@lucide/svelte/icons/alert-circle';
 	import ArrowRight from '@lucide/svelte/icons/arrow-right';
-	import Layers from '@lucide/svelte/icons/layers';
-	import Zap from '@lucide/svelte/icons/zap';
-	import Palette from '@lucide/svelte/icons/palette';
 	import Box from '@lucide/svelte/icons/box';
-	import Terminal from '@lucide/svelte/icons/terminal';
-	import Github from '@lucide/svelte/icons/github';
-	import Sparkles from '@lucide/svelte/icons/sparkles';
+	import Check from '@lucide/svelte/icons/check';
+	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Code from '@lucide/svelte/icons/code';
+	import Copy from '@lucide/svelte/icons/copy';
 	import Cpu from '@lucide/svelte/icons/cpu';
 	import Eye from '@lucide/svelte/icons/eye';
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
-	import Check from '@lucide/svelte/icons/check';
-	import Copy from '@lucide/svelte/icons/copy';
+	import Github from '@lucide/svelte/icons/github';
+	import Layers from '@lucide/svelte/icons/layers';
+	import Loader from '@lucide/svelte/icons/loader';
+	import Palette from '@lucide/svelte/icons/palette';
+	import Radio from '@lucide/svelte/icons/radio';
 	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
 	import Server from '@lucide/svelte/icons/server';
-	import Radio from '@lucide/svelte/icons/radio';
-	import AlertCircle from '@lucide/svelte/icons/alert-circle';
-	import Loader from '@lucide/svelte/icons/loader';
+	import Sparkles from '@lucide/svelte/icons/sparkles';
+	import Terminal from '@lucide/svelte/icons/terminal';
+	import Zap from '@lucide/svelte/icons/zap';
+	import { superForm } from 'sveltekit-superforms';
 	import { getRandomMsg, getTags } from './data.remote';
-	import type { RemoteQuery } from '@sveltejs/kit';
 
 	let copied = $state(false);
 	let showEffects = $state(true);
 
+	let { data } = $props();
+
+	const { form, errors } = superForm(data.form);
+
 	var randomQuery = getRandomMsg()
+    // const { form, errors, constraints, message } = superForm(data?.form);
 
 	function copyCommand() {
 		navigator.clipboard.writeText('bunx sv create --template minimal .');
@@ -127,6 +134,48 @@
 			</div>
 		</nav>
 	</header>
+
+	<div class="mx-auto max-w-6xl px-6 lg:px-8 mt-20">
+		<Card.Card class="border-white/[0.06] bg-card/60 backdrop-blur-sm w-full">
+			<Card.CardContent class="p-6 pt-0">
+				<form method="POST">
+					<Field.Group>
+						<Field.Set>
+							<Field.Legend>Contact Form</Field.Legend>
+							<Field.Description>Send us a message and we'll get back to you.</Field.Description>
+							<Field.Group>
+								<Field.Field>
+									<Field.Label>Name</Field.Label>
+									<Input type="text" placeholder="Your name" name="name" bind:value={$form.name} />
+									{#if $errors.name}
+										<Field.Error>{$errors.name}</Field.Error>
+									{/if}
+								</Field.Field>
+								<Field.Field>
+									<Field.Label>E-Mail</Field.Label>
+									<Input type="email" placeholder="Your email" name="email" bind:value={$form.email} />
+									{#if $errors.email}
+										<Field.Error>{$errors.email}</Field.Error>
+									{/if}
+								</Field.Field>
+								<Field.Field>
+									<Field.Label>Message</Field.Label>
+									<Input type="text" placeholder="Your message" name="message" bind:value={$form.message} />
+									{#if $errors.message}
+										<Field.Error>{$errors.message}</Field.Error>
+									{/if}
+								</Field.Field>
+							</Field.Group>
+						  <Field.Field orientation="horizontal">
+							<Button type="submit">Submit</Button>
+							<Button variant="outline" type="button">Cancel</Button>
+						  </Field.Field>
+						</Field.Set>
+					</Field.Group>
+				</form>
+			</Card.CardContent>
+		</Card.Card>
+	</div>
 
 	<!-- ========== HERO ========== -->
 	<section class="relative min-h-[92vh] flex items-center justify-center pt-16">
@@ -651,6 +700,7 @@
 					</Card.CardContent>
 				</Card.Card>
 			</div>
+
 		</div>
 	</section>
 
