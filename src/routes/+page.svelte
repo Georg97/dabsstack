@@ -21,12 +21,13 @@
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Check from '@lucide/svelte/icons/check';
 	import Copy from '@lucide/svelte/icons/copy';
-  import { getTags } from './data.remote';
+  import { getRandomMsg, getTags } from './data.remote';
+  import type { RemoteQuery } from '@sveltejs/kit';
 
 	let copied = $state(false);
 	let showEffects = $state(true);
 
-	var tagsQuery = getTags();
+	var randomQuery = getRandomMsg()
 
 	function copyCommand() {
 		navigator.clipboard.writeText('bunx sv create --template minimal .');
@@ -174,9 +175,22 @@
 						your
 						<span class="italic text-muted-foreground">way</span>.
 					</h1>
-					{#each await getTags() as tag}
-						<h1>tag: {tag}</h1>
-					{/each}
+					<div>
+						<h1>Server Side generated content with SvelteKit's new Remote Queries</h1>
+						{#each await getTags() as tag}
+							<h1>tag: {tag}</h1>
+						{/each}
+
+						<h1>Runtime execution of Remote Functions</h1>
+						{#if randomQuery?.error}
+							<h1>This Message had an error (errors are simulated randomly). You can handle errors in your UI.</h1>
+						{:else if randomQuery?.loading}
+							<h1>loading...</h1>
+						{:else}
+							<h1>{randomQuery?.current}</h1>
+						{/if}
+						<Button onclick={() => { randomQuery.refresh() }}>Get new Message</Button>
+					</div>
 
 					<p
 						class="animate-fade-up mt-7 max-w-lg text-lg leading-relaxed text-muted-foreground"
