@@ -28,6 +28,8 @@
 	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import Terminal from '@lucide/svelte/icons/terminal';
 	import Zap from '@lucide/svelte/icons/zap';
+	import Send from '@lucide/svelte/icons/send';
+	import Mail from '@lucide/svelte/icons/mail';
 	import { superForm } from 'sveltekit-superforms';
 	import { getRandomMsg, getTags } from './data.remote';
 
@@ -134,48 +136,6 @@
 			</div>
 		</nav>
 	</header>
-
-	<div class="mx-auto max-w-6xl px-6 lg:px-8 mt-20">
-		<Card.Card class="border-white/[0.06] bg-card/60 backdrop-blur-sm w-full">
-			<Card.CardContent class="p-6 pt-0">
-				<form method="POST" use:enhance>
-					<Field.Group>
-						<Field.Set>
-							<Field.Legend>Contact Form</Field.Legend>
-							<Field.Description>Send us a message and we'll get back to you.</Field.Description>
-							<Field.Group>
-								<Field.Field>
-									<Field.Label>Name</Field.Label>
-									<Input type="text" placeholder="Your name" name="name" bind:value={$form.name} />
-									{#if $errors.name}
-										<Field.Error>{$errors.name}</Field.Error>
-									{/if}
-								</Field.Field>
-								<Field.Field>
-									<Field.Label>E-Mail</Field.Label>
-									<Input type="email" placeholder="Your email" name="email" bind:value={$form.email} />
-									{#if $errors.email}
-										<Field.Error>{$errors.email}</Field.Error>
-									{/if}
-								</Field.Field>
-								<Field.Field>
-									<Field.Label>Message</Field.Label>
-									<Input type="text" placeholder="Your message" name="message" bind:value={$form.message} />
-									{#if $errors.message}
-										<Field.Error>{$errors.message}</Field.Error>
-									{/if}
-								</Field.Field>
-							</Field.Group>
-						  <Field.Field orientation="horizontal">
-							<Button type="submit">Submit</Button>
-							<Button variant="outline" type="button">Cancel</Button>
-						  </Field.Field>
-						</Field.Set>
-					</Field.Group>
-				</form>
-			</Card.CardContent>
-		</Card.Card>
-	</div>
 
 	<!-- ========== HERO ========== -->
 	<section class="relative min-h-[92vh] flex items-center justify-center pt-16">
@@ -701,6 +661,133 @@
 				</Card.Card>
 			</div>
 
+		</div>
+	</section>
+
+	<!-- ========== FORM SHOWCASE ========== -->
+	<div class="mx-auto max-w-6xl px-6 lg:px-8">
+		<div class="relative flex items-center py-4">
+			<Separator class="flex-1 bg-white/[0.06]" />
+			<span class="mx-4 shrink-0 text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground/50">Forms</span>
+			<Separator class="flex-1 bg-white/[0.06]" />
+		</div>
+	</div>
+
+	<section class="relative mx-auto max-w-6xl px-6 py-24 lg:px-8">
+		{#if showEffects}
+			<div
+				class="pointer-events-none absolute left-0 top-1/3 size-[350px] rounded-full opacity-[0.05] blur-[100px]"
+				style="background: var(--amber);"
+			></div>
+		{/if}
+
+		<div class="relative grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-start">
+			<!-- Left: Description -->
+			<div class="lg:sticky lg:top-24">
+				<Badge class="mb-4 border-amber/20 bg-amber/10 text-amber">
+					<Mail class="mr-1 size-3" />
+					SuperForms
+				</Badge>
+				<h2
+					class="text-3xl font-bold tracking-tight sm:text-4xl"
+					style="font-family: var(--font-display);"
+				>
+					Forms that <span class="italic text-muted-foreground">just work</span>
+				</h2>
+				<p class="mt-4 text-lg text-muted-foreground leading-relaxed">
+					Server-side validation with Zod, client-side reactivity with SuperForms. No page reloads, instant feedback, type-safe end to end.
+				</p>
+				<div class="mt-6 space-y-3">
+					{#each [
+						'Zod schema validation',
+						'Progressive enhancement',
+						'Reactive error states',
+						'No page reload on submit'
+					] as feature}
+						<div class="flex items-center gap-2.5 text-sm text-muted-foreground">
+							<div class="flex size-5 items-center justify-center rounded-full bg-amber/10">
+								<Check class="size-3 text-amber" />
+							</div>
+							{feature}
+						</div>
+					{/each}
+				</div>
+			</div>
+
+			<!-- Right: Form -->
+			<Card.Card class="border-white/[0.06] bg-card/50 backdrop-blur-sm overflow-hidden">
+				<Card.CardHeader class="p-6 pb-0">
+					<div class="flex items-center gap-2 mb-1">
+						<div class="size-2.5 rounded-full bg-terracotta"></div>
+						<div class="size-2.5 rounded-full bg-amber"></div>
+						<div class="size-2.5 rounded-full bg-green-500/60"></div>
+						<span class="ml-2 text-xs text-muted-foreground font-mono">contact-form.svelte</span>
+					</div>
+				</Card.CardHeader>
+				<Card.CardContent class="p-6">
+					<form method="POST" use:enhance>
+						<Field.Group>
+							<Field.Set>
+								<Field.Legend class="text-lg text-foreground" style="font-family: var(--font-display);">Get in touch</Field.Legend>
+								<Field.Description class="text-muted-foreground">Send us a message and we'll get back to you.</Field.Description>
+								<Field.Group>
+									<Field.Field>
+										<Field.Label class="text-sm text-muted-foreground">Name</Field.Label>
+										<Input
+											type="text"
+											placeholder="Your name"
+											name="name"
+											bind:value={$form.name}
+											class="border-white/[0.06] bg-secondary/30 placeholder:text-muted-foreground/40 focus:border-amber/30 focus:ring-amber/20"
+										/>
+										{#if $errors.name}
+											<Field.Error>{$errors.name}</Field.Error>
+										{/if}
+									</Field.Field>
+									<Field.Field>
+										<Field.Label class="text-sm text-muted-foreground">E-Mail</Field.Label>
+										<Input
+											type="email"
+											placeholder="you@example.com"
+											name="email"
+											bind:value={$form.email}
+											class="border-white/[0.06] bg-secondary/30 placeholder:text-muted-foreground/40 focus:border-amber/30 focus:ring-amber/20"
+										/>
+										{#if $errors.email}
+											<Field.Error>{$errors.email}</Field.Error>
+										{/if}
+									</Field.Field>
+									<Field.Field>
+										<Field.Label class="text-sm text-muted-foreground">Message</Field.Label>
+										<Input
+											type="text"
+											placeholder="What's on your mind?"
+											name="message"
+											bind:value={$form.message}
+											class="border-white/[0.06] bg-secondary/30 placeholder:text-muted-foreground/40 focus:border-amber/30 focus:ring-amber/20"
+										/>
+										{#if $errors.message}
+											<Field.Error>{$errors.message}</Field.Error>
+										{/if}
+									</Field.Field>
+								</Field.Group>
+								<Field.Field orientation="horizontal">
+									<Button
+										type="submit"
+										class="bg-gradient-to-r from-amber to-copper text-primary-foreground border-0 hover:opacity-90"
+									>
+										<Send class="mr-1.5 size-3.5" />
+										Submit
+									</Button>
+									<Button variant="outline" type="button" class="border-white/10 hover:border-white/20 hover:bg-white/[0.04]">
+										Cancel
+									</Button>
+								</Field.Field>
+							</Field.Set>
+						</Field.Group>
+					</form>
+				</Card.CardContent>
+			</Card.Card>
 		</div>
 	</section>
 
