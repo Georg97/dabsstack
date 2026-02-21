@@ -36,7 +36,7 @@
 
 	let { data } = $props();
 
-	const { form, errors } = superForm(data.form);
+	const { form, errors, enhance } = superForm(data.form);
 
 	var randomQuery = getRandomMsg()
     // const { form, errors, constraints, message } = superForm(data?.form);
@@ -138,7 +138,7 @@
 	<div class="mx-auto max-w-6xl px-6 lg:px-8 mt-20">
 		<Card.Card class="border-white/[0.06] bg-card/60 backdrop-blur-sm w-full">
 			<Card.CardContent class="p-6 pt-0">
-				<form method="POST">
+				<form method="POST" use:enhance>
 					<Field.Group>
 						<Field.Set>
 							<Field.Legend>Contact Form</Field.Legend>
