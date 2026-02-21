@@ -30,10 +30,13 @@
 	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import Terminal from '@lucide/svelte/icons/terminal';
 	import Zap from '@lucide/svelte/icons/zap';
+	import LogOut from '@lucide/svelte/icons/log-out';
 	import { superForm } from 'sveltekit-superforms';
 	import { toast } from 'svelte-sonner';
+	import { authClient } from '$lib/auth-client';
 	import { getRandomMsg, getTags } from './data.remote';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	let copied = $state(false);
 	let showEffects = $state(true);
@@ -153,11 +156,30 @@
 				<Button variant="ghost" size="sm" href="https://github.com/Georg97/dabsstack" target="_blank" class="text-muted-foreground hover:text-foreground size-8 p-0 sm:size-auto sm:p-2">
 					<Github class="size-4" />
 				</Button>
-				<Button size="sm" href="/login" class="from-amber to-copper text-primary-foreground border-0 bg-gradient-to-r text-xs hover:opacity-90 sm:text-sm">
-					<span class="hidden sm:inline">Sign In</span>
-					<span class="sm:hidden">Sign In</span>
-					<ArrowRight class="ml-1 size-3.5" />
-				</Button>
+				{#if data.user}
+					<span class="text-muted-foreground hidden text-sm sm:block">{data.user.name}</span>
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							<Button
+								variant="ghost"
+								size="sm"
+								class="text-muted-foreground hover:text-destructive size-8 p-0 sm:size-auto sm:p-2"
+								onclick={async () => {
+									await authClient.signOut();
+									goto('/login');
+								}}
+							>
+								<LogOut class="size-4" />
+							</Button>
+						</Tooltip.Trigger>
+						<Tooltip.Content>Sign out</Tooltip.Content>
+					</Tooltip.Root>
+				{:else}
+					<Button size="sm" href="/login" class="from-amber to-copper text-primary-foreground border-0 bg-gradient-to-r text-xs hover:opacity-90 sm:text-sm">
+						Sign In
+						<ArrowRight class="ml-1 size-3.5" />
+					</Button>
+				{/if}
 			</div>
 		</nav>
 	</header>

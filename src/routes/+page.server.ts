@@ -1,7 +1,8 @@
 import { fail, message, superValidate } from 'sveltekit-superforms';
+import { redirect } from '@sveltejs/kit';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { z } from "zod";
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 
 export type ContactFormData = {
     name: string;
@@ -15,9 +16,12 @@ const zodForm = z.object({
     message: z.string().min(1, "Message is required")
 });
 
-export const load = async () => {
-    const form = await superValidate(zod4(zodForm));
+export const load: PageServerLoad = async ({ locals }) => {
+    if (!locals.user) {
+        redirect(302, '/login');
+    }
 
+    const form = await superValidate(zod4(zodForm));
     return { form };
 }
 
