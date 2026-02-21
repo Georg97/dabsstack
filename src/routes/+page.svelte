@@ -153,9 +153,9 @@
 				<Button variant="ghost" size="sm" href="https://github.com/Georg97/dabsstack" target="_blank" class="text-muted-foreground hover:text-foreground size-8 p-0 sm:size-auto sm:p-2">
 					<Github class="size-4" />
 				</Button>
-				<Button size="sm" class="from-amber to-copper text-primary-foreground border-0 bg-gradient-to-r text-xs hover:opacity-90 sm:text-sm">
-					<span class="hidden sm:inline">Get Started</span>
-					<span class="sm:hidden">Start</span>
+				<Button size="sm" href="/login" class="from-amber to-copper text-primary-foreground border-0 bg-gradient-to-r text-xs hover:opacity-90 sm:text-sm">
+					<span class="hidden sm:inline">Sign In</span>
+					<span class="sm:hidden">Sign In</span>
 					<ArrowRight class="ml-1 size-3.5" />
 				</Button>
 			</div>
