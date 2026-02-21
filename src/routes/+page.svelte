@@ -21,9 +21,12 @@
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Check from '@lucide/svelte/icons/check';
 	import Copy from '@lucide/svelte/icons/copy';
+  import { getTags } from './data.remote';
 
 	let copied = $state(false);
 	let showEffects = $state(true);
+
+	var tagsQuery = getTags();
 
 	function copyCommand() {
 		navigator.clipboard.writeText('bunx sv create --template minimal .');
@@ -171,6 +174,9 @@
 						your
 						<span class="italic text-muted-foreground">way</span>.
 					</h1>
+					{#each await getTags() as tag}
+						<h1>tag: {tag}</h1>
+					{/each}
 
 					<p
 						class="animate-fade-up mt-7 max-w-lg text-lg leading-relaxed text-muted-foreground"
